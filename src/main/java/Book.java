@@ -1,10 +1,22 @@
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "books")
 public class Book extends LibraryItem {
+    @Column(name = "num_pages", nullable = false)
     private final int numberOfPages;
 
     public Book(String itemId, String title, String creator, int numberOfPages) {
         super(itemId, title, creator);
         if (numberOfPages <= 0) throw new IllegalArgumentException("Pages must be a positive number");
         this.numberOfPages = numberOfPages;
+    }
+
+    public Book() {
+        super();
+        this.numberOfPages = 1;
     }
 
     public int getNumberOfPages() {

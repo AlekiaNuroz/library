@@ -1,6 +1,3 @@
-import com.ecommerce.Customer;
-import com.ecommerce.Product;
-import com.ecommerce.orders.Order;
 import org.hibernate.*;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -74,7 +71,7 @@ public class DatabaseManager {
     }
 
     /**
-     * Initializes the Hibernate SessionFactory using HikariCP for connection pooling
+     * Initializes the Hibernate SessionFacto   ry using HikariCP for connection pooling
      * and configures it with the database details and Hibernate properties.
      * This method sets up the data source using the provided database host, port, name,
      * user, and password. It also configures Hibernate to automatically update the
@@ -104,11 +101,25 @@ public class DatabaseManager {
                 .build();
 
         sessionFactory = new MetadataSources(registry)
-                .addAnnotatedClass(Customer.class)
-                .addAnnotatedClass(Product.class)
-                .addAnnotatedClass(Order.class)
+                .addAnnotatedClass(Book.class)
+                .addAnnotatedClass(Dvd.class)
+                .addAnnotatedClass(Magazine.class)
+                .addAnnotatedClass(VideoGame.class)
                 .buildMetadata()
                 .buildSessionFactory();
+    }
+
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            initHibernate();
+        }
+        return sessionFactory;
+    }
+
+    public static void shutdown() {
+        if (sessionFactory != null) {
+            sessionFactory.close();
+        }
     }
 
     /**
@@ -141,7 +152,7 @@ public class DatabaseManager {
      * @return The entity of the specified type with the given ID, or {@code null}
      * if no such entity exists in the database.
      */
-    public <T> T getById(Class<T> entity, Long id) {
+    public <T> T getById(Class<T> entity, String id) {
         try (Session session = sessionFactory.openSession()) {
             return session.get(entity, id);
         }

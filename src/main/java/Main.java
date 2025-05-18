@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         GenericCatalog<LibraryItem> catalog = new GenericCatalog<>();
+        DatabaseManager db = new DatabaseManager();
         Scanner scanner = new Scanner(System.in);
         String[] mainMenu = {"Add Library Item", "Remove Library Item"};
         boolean runing = true;
@@ -23,5 +24,12 @@ public class Main {
                     runing = false;
             }
         }
+    }
+
+    private enum mediaType {
+        BOOK,
+        DVD,
+        MAGAZINE,
+        VIDEO_GAME
     }
 }
