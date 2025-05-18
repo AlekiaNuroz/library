@@ -21,7 +21,7 @@ public class GenericCatalogTests {
             "INVALID, , , -1, INVALID_TYPE"
     })
     public void testAddBookToCatalog(String itemId, String title, String creator, String spec, String type) {
-        LibraryItem itemToAdd = createLibraryItem(itemId, title, creator, spec, type);
+        LibraryItem itemToAdd = createLibraryItem(title, creator, spec, type);
 
         if (itemToAdd != null) {
             catalog.addItem(itemToAdd);
@@ -42,7 +42,7 @@ public class GenericCatalogTests {
             "INVALID, , , -1, INVALID_TYPE, false"
     })
     public void testRemoveBookFromCatalog(String itemId, String title, String creator, String spec, String type, boolean shouldExist) {
-        LibraryItem item = createLibraryItem(itemId, title, creator, spec, type);
+        LibraryItem item = createLibraryItem(title, creator, spec, type);
 
         if (item != null) {
             catalog.addItem(item);
@@ -57,12 +57,12 @@ public class GenericCatalogTests {
         }
     }
 
-    private LibraryItem createLibraryItem(String itemId, String title, String creator, String spec, String type) {
+    private LibraryItem createLibraryItem(String title, String creator, String spec, String type) {
         return switch (type) {
-            case "BOOK" -> new Book(itemId, title, creator, Integer.parseInt(spec));
-            case "DVD" -> new Dvd(itemId, title, creator, Integer.parseInt(spec));
-            case "MAGAZINE" -> new Magazine(itemId, title, creator, Integer.parseInt(spec));
-            case "VIDEO_GAME" -> new VideoGame(itemId, title, creator, spec);
+            case "BOOK" -> new Book(title, creator, Integer.parseInt(spec));
+            case "DVD" -> new Dvd(title, creator, Integer.parseInt(spec));
+            case "MAGAZINE" -> new Magazine(title, creator, Integer.parseInt(spec));
+            case "VIDEO_GAME" -> new VideoGame(title, creator, spec);
             default -> null;
         };
     }

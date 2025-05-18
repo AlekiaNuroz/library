@@ -1,10 +1,22 @@
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "dvds")
 public class Dvd extends LibraryItem{
+    @Column(name = "runtime", nullable = false)
     private final int runtimeInMinutes;
 
-    public Dvd(String itemId, String title, String author, int runtimeInMinutes) {
-        super(itemId, title, author);
+    public Dvd(String title, String author, int runtimeInMinutes) {
+        super(IDGenerator.generateId("dvd"), title, author);
         if (runtimeInMinutes <= 0) throw new IllegalArgumentException("Runtime must be greater than zero");
         this.runtimeInMinutes = runtimeInMinutes;
+    }
+
+    public Dvd() {
+        super();
+        this.runtimeInMinutes = 1;
     }
 
 

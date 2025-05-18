@@ -105,6 +105,7 @@ public class DatabaseManager {
                 .addAnnotatedClass(Dvd.class)
                 .addAnnotatedClass(Magazine.class)
                 .addAnnotatedClass(VideoGame.class)
+                .addAnnotatedClass(IdCounter.class)
                 .buildMetadata()
                 .buildSessionFactory();
     }
@@ -130,12 +131,12 @@ public class DatabaseManager {
      * try-with-resources block to ensure resources are released.
      *
      * @param <T>    The type of the entity to save.
-     * @param entity The entity object to be persisted in the database.
+     * @param item   The entity object to be persisted in the database.
      */
-    public <T> void save(T entity) {
+    public <T> void save(LibraryItem item) {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
-            session.persist(entity);
+            session.merge(item);
             tx.commit();
         }
     }

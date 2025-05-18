@@ -8,8 +8,8 @@ public class Book extends LibraryItem {
     @Column(name = "num_pages", nullable = false)
     private final int numberOfPages;
 
-    public Book(String itemId, String title, String creator, int numberOfPages) {
-        super(itemId, title, creator);
+    public Book(String title, String creator, int numberOfPages) {
+        super(IDGenerator.generateId("book"), title, creator);
         if (numberOfPages <= 0) throw new IllegalArgumentException("Pages must be a positive number");
         this.numberOfPages = numberOfPages;
     }

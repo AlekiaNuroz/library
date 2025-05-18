@@ -69,16 +69,16 @@ public class LibraryItemTest {
     private LibraryItem createTypedItem(String type, String id, String title, String creator, int numericValue) {
         if (numericValue <= 0) throw new IllegalArgumentException("Numeric value must be positive");
         return switch (type) {
-            case "Book" -> new Book(id, title, creator, numericValue);
-            case "DVD" -> new Dvd(id, title, creator, numericValue);
-            case "Magazine" -> new Magazine(id, title, creator, numericValue);
+            case "Book" -> new Book(title, creator, numericValue);
+            case "DVD" -> new Dvd(title, creator, numericValue);
+            case "Magazine" -> new Magazine(title, creator, numericValue);
             default -> throw new IllegalArgumentException("Unsupported type: " + type);
         };
     }
 
     private LibraryItem createVideoGame(String id, String title, String creator, String platform) {
         validateNotEmpty(platform, "Platform must not be null or empty");
-        return new VideoGame(id, title, creator, platform);
+        return new VideoGame(title, creator, platform);
     }
 
     private enum MediaType {
