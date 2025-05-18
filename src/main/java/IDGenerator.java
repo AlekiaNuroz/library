@@ -43,7 +43,7 @@ public class IDGenerator {
             }
             tx.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error persisting prefix count: " + e.getMessage());
         }
     }
 
@@ -54,7 +54,7 @@ public class IDGenerator {
                 usedIds.put(counter.getPrefix(), counter.getLastUsedId());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error loading usedIds from database: " + e.getMessage());
         }
     }
 }

@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 @Table(name = "magazines")
 public class Magazine extends LibraryItem {
     @Column(name = "issue", nullable = false)
-    private final int issueNumber;
+    private int issueNumber;
 
     public Magazine(String title, String author, int issueNumber) {
         super(IDGenerator.generateId("magazine"), title, author);
@@ -26,5 +26,10 @@ public class Magazine extends LibraryItem {
     @Override
     public String toString() {
         return String.format("[Magazine] ID: %s - Title: %s - Editor: %s - Issue Number: %d", itemId, title, creator, issueNumber);
+    }
+
+    public void setIssueNumber(int value) {
+        if (value <= 0) throw new IllegalArgumentException("Issue number must be greater than zero");
+        this.issueNumber = value;
     }
 }

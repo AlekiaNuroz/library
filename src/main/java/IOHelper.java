@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -59,6 +62,85 @@ public class IOHelper {
             System.out.println((i + 1) + ". " + options[i]);
         }
         System.out.println((options.length + 1) + ". " + exitText + "\n");
+    }
+
+    public static void printCatalog(List<LibraryItem> items) {
+        String header1 = "Item ID";
+        String header2 = "Title";
+
+        int col1Width = header1.length();
+        int col2Width = header2.length();
+
+        for (LibraryItem item : items) {
+            String itemId = item.getItemID();
+            String title  = item.getTitle();
+
+            if (itemId.length() > col1Width) {
+                col1Width = itemId.length();
+            }
+            if (title.length() > col2Width) {
+                col2Width = title.length();
+            }
+        }
+
+        String topBorder    = "+"
+                + "-".repeat(col1Width + 2)
+                + "+"
+                + "-".repeat(col2Width + 2)
+                + "+";
+        String rowFormat = "| %-" + col1Width + "s | %-" + col2Width + "s |%n";
+
+        System.out.println(topBorder);
+
+        System.out.printf(rowFormat, header1, header2);
+
+        System.out.println(topBorder);
+
+        for (LibraryItem item : items) {
+            System.out.printf(rowFormat, item.getItemID(), item.getTitle());
+        }
+
+        System.out.println(topBorder);
+        System.out.println();
+    }
+
+    public static void printItemDetails(LibraryItem item) {
+        List<String[]> rows = new ArrayList<>();
+        rows.add(new String[]{ "Item ID",  item.getItemID()  });
+        rows.add(new String[]{ "Title",    item.getTitle()   });
+        rows.add(new String[]{ "Creator",  item.getCreator() });
+
+        switch (item) {
+            case Book book ->
+                    rows.add(new String[]{ "Pages", String.valueOf(book.getNumberOfPages()) });
+            case Dvd dvd ->
+                    rows.add(new String[]{ "Duration", dvd.getRuntime() + " minutes" });
+            case Magazine mag ->
+                    rows.add(new String[]{ "Issue Number", String.valueOf(mag.getIssueNumber()) });
+            case VideoGame game ->
+                    rows.add(new String[]{ "Platform", game.getPlatform() });
+            default -> {
+            }
+        }
+
+        int col1 = 0, col2 = 0;
+        for (String[] row : rows) {
+            col1 = Math.max(col1, row[0].length());
+            col2 = Math.max(col2, row[1].length());
+        }
+
+        String border = "+"
+                + "-".repeat(col1 + 2)
+                + "+"
+                + "-".repeat(col2 + 2)
+                + "+";
+        String fmt    = "| %-" + col1 + "s | %-" + col2 + "s |%n";
+
+        System.out.println(border);
+        for (String[] row : rows) {
+            System.out.printf(fmt, row[0], row[1]);
+        }
+        System.out.println(border);
     }
 
     /**

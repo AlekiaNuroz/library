@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 @Table(name = "video_games")
 public class VideoGame extends LibraryItem {
     @Column(name = "platform", nullable = false)
-    private final String platform;
+    private String platform;
 
     public VideoGame(String title, String author, String platform) {
         super(IDGenerator.generateId("video_game"), title, author);
@@ -26,5 +26,10 @@ public class VideoGame extends LibraryItem {
     @Override
     public String toString() {
         return String.format("[Video Game] Id: %s - Title: %s - Publisher: %s - Platform: %s", itemId, title, creator, platform);
+    }
+
+    public void setPlatform(String value) {
+        if (value == null || value.isBlank()) throw new IllegalArgumentException("Platform must not be null or empty");
+        this.platform = value;
     }
 }

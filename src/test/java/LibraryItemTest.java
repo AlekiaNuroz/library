@@ -56,8 +56,8 @@ public class LibraryItemTest {
         validateNotEmpty(title, "Title must not be null or empty");
 
         return switch (type) {
-            case "Book", "DVD", "Magazine" -> createTypedItem(type, id, title, creator, (int) value);
-            case "VideoGame" -> createVideoGame(id, title, creator, (String) value);
+            case "Book", "DVD", "Magazine" -> createTypedItem(type, title, creator, (int) value);
+            case "VideoGame" -> createVideoGame(title, creator, (String) value);
             default -> throw new IllegalArgumentException("Unsupported item type: " + type);
         };
     }
@@ -66,7 +66,7 @@ public class LibraryItemTest {
         if (value == null || value.isBlank()) throw new IllegalArgumentException(errorMessage);
     }
 
-    private LibraryItem createTypedItem(String type, String id, String title, String creator, int numericValue) {
+    private LibraryItem createTypedItem(String type, String title, String creator, int numericValue) {
         if (numericValue <= 0) throw new IllegalArgumentException("Numeric value must be positive");
         return switch (type) {
             case "Book" -> new Book(title, creator, numericValue);
@@ -76,7 +76,7 @@ public class LibraryItemTest {
         };
     }
 
-    private LibraryItem createVideoGame(String id, String title, String creator, String platform) {
+    private LibraryItem createVideoGame(String title, String creator, String platform) {
         validateNotEmpty(platform, "Platform must not be null or empty");
         return new VideoGame(title, creator, platform);
     }

@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 @Table(name = "books")
 public class Book extends LibraryItem {
     @Column(name = "num_pages", nullable = false)
-    private final int numberOfPages;
+    private int numberOfPages;
 
     public Book(String title, String creator, int numberOfPages) {
         super(IDGenerator.generateId("book"), title, creator);
@@ -26,5 +26,10 @@ public class Book extends LibraryItem {
     @Override
     public String toString() {
         return String.format("[Book] ID: %s - Title: %s - Author: %s - Number of Pages: %d", itemId, title, creator, numberOfPages);
+    }
+
+    public void setPages(int value) {
+        if (numberOfPages <= 0) throw new IllegalArgumentException("Pages must be a positive number");
+        this.numberOfPages = value;
     }
 }

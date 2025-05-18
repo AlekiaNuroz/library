@@ -37,4 +37,14 @@ public abstract class LibraryItem {
     public String getCreator() {
         return creator;
     }
+
+    public void setTitle(String title) {
+        if (title == null || title.isBlank()) throw new IllegalArgumentException("Title must not be null or empty");
+        this.title = title;
+    }
+
+    public void setCreator(String creator) {
+        if (creator == null || creator.isBlank()) throw new IllegalArgumentException("Creator must not be null or empty");
+        this.creator = creator;
+    }
 }
