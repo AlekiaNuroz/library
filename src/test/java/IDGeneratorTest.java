@@ -19,6 +19,19 @@ class IDGeneratorTest {
         );
     }
 
+    /**
+     * Tests the {@link IDGenerator#generateId(String)} method with various input types.
+     * <p>
+     * Verifies that:
+     * <ul>
+     *     <li>Valid types return an ID starting with the expected character and followed by digits</li>
+     *     <li>Invalid types throw the expected exceptions</li>
+     * </ul>
+     *
+     * @param type the type of item for which an ID should be generated
+     * @param expectedFirstCharacter the expected first character of the ID for valid types
+     * @param expectedException the exception expected for invalid types, or {@code null} for valid cases
+     */
     @ParameterizedTest
     @MethodSource("idCases")
     void testGeneratedId(String type, Character expectedFirstCharacter, Class<? extends Throwable> expectedException) {
@@ -31,7 +44,7 @@ class IDGeneratorTest {
         }
     }
 
-
+    // Simple helper to extract numeric suffix from generated ID
     private static String generateIdAndReturnDigits(String type) {
         var id = IDGenerator.generateId(type);
         return id.substring(id.length() - 6);

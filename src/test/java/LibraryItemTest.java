@@ -18,6 +18,15 @@ public class LibraryItemTest {
         );
     }
 
+    /**
+     * Tests that valid combinations of input parameters produce non-null {@link LibraryItem} instances.
+     *
+     * @param type    the type of the library item (Book, DVD, etc.)
+     * @param id      the identifier for the item
+     * @param title   the title of the item
+     * @param creator the creator (author/director/etc.)
+     * @param value   the type-specific field (pages, duration, issue, or platform)
+     */
     @ParameterizedTest
     @MethodSource("validLibraryItems")
     void testValidLibraryItems(String type, String id, String title, String creator, Object value) {
@@ -36,6 +45,17 @@ public class LibraryItemTest {
         );
     }
 
+    /**
+     * Tests that invalid input parameters throw the expected {@link IllegalArgumentException} or {@link NullPointerException}.
+     * <p>
+     * This includes cases such as unsupported types, null/blank fields, negative numbers, and null platform values.
+     *
+     * @param typeStr  the type string of the library item
+     * @param id       the ID, or "generate" to trigger automatic ID generation
+     * @param title    the title of the item
+     * @param creator  the creator of the item
+     * @param value    the type-specific value (can be null or invalid)
+     */
     @ParameterizedTest
     @MethodSource("invalidLibraryItems")
     void testInvalidLibraryItemsShouldFail(String typeStr, String id, String title, String creator, Object value) {
@@ -46,10 +66,6 @@ public class LibraryItemTest {
             assertThrows(IllegalArgumentException.class, () -> createItem(typeStr, generatedId, title, creator, value));
         }
     }
-
-
-
-
 
     private LibraryItem createItem(String type, String id, String title, String creator, Object value) {
         validateNotEmpty(id, "ID must not be null or empty");
