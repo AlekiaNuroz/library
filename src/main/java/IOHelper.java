@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -74,40 +71,46 @@ public class IOHelper {
      * Prints a formatted catalog of library items in table format.
      * @param items List of items to display
      */
-    public static void printCatalog(List<LibraryItem> items) {
-        printCatalog(items, items.size());  // Default: print all columns
+    public static void printCatalog(List<LibraryItem> items, Scanner scanner) {
+        printCatalog(items, items.size(), scanner);  // Default: print all columns
     }
 
-    public static void printCatalog(List<LibraryItem> items, int numColumns) {
-        // Define fixed column order and getters
-        String[] allColumns = {"Item ID", "Title", "Creator"};
-        int columnsToPrint = Math.min(numColumns, allColumns.length);
+    public static void printCatalog(List<LibraryItem> items, int numColumns, Scanner scanner) {
+        IOHelper.clearScreen();
 
-        // Map columns to getters
-        var getters = new java.util.HashMap<String, java.util.function.Function<LibraryItem, String>>();
-        getters.put("Item ID", LibraryItem::getItemID);
-        getters.put("Title", LibraryItem::getTitle);
-        getters.put("Creator", LibraryItem::getCreator);
+        // Define base columns
+        String[] baseColumns = {"Item ID", "Title", "Creator"};
+        Map<String, Function<LibraryItem, String>> getters = Map.of(
+                "Item ID", LibraryItem::getItemID,
+                "Title", LibraryItem::getTitle,
+                "Creator", LibraryItem::getCreator
+        );
 
-        // Select columns to print
-        String[] columns = new String[columnsToPrint];
-        System.arraycopy(allColumns, 0, columns, 0, columnsToPrint);
+        // Determine total columns (up to 3 base + 1 unique field)
+        int columnsToPrint = Math.min(numColumns, baseColumns.length + 1);
+        List<String> columns = new ArrayList<>(List.of(baseColumns).subList(0, Math.min(columnsToPrint, baseColumns.length)));
 
-        // Calculate widths
-        int[] colWidths = new int[columnsToPrint];
-        for (int i = 0; i < columnsToPrint; i++) {
-            colWidths[i] = columns[i].length();
+        boolean includeUnique = columnsToPrint > baseColumns.length;
+        if (includeUnique) {
+            columns.add("Details");
         }
+
+        // Calculate max widths
+        int[] colWidths = new int[columns.size()];
+        for (int i = 0; i < columns.size(); i++) {
+            colWidths[i] = columns.get(i).length();
+        }
+
         for (LibraryItem item : items) {
-            for (int i = 0; i < columnsToPrint; i++) {
-                String val = getters.get(columns[i]).apply(item);
-                if (val != null) {
-                    colWidths[i] = Math.max(colWidths[i], val.length());
-                }
+            for (int i = 0; i < columns.size(); i++) {
+                String value = (i < baseColumns.length)
+                        ? Optional.ofNullable(getters.get(columns.get(i)).apply(item)).orElse("")
+                        : getUniqueField(item);
+                colWidths[i] = Math.max(colWidths[i], value.length());
             }
         }
 
-        // Build border and row format
+        // Construct border and row format
         StringBuilder border = new StringBuilder("+");
         StringBuilder rowFormat = new StringBuilder("|");
         for (int width : colWidths) {
@@ -116,23 +119,52 @@ public class IOHelper {
         }
         rowFormat.append("%n");
 
-        // Print header
-        System.out.println(border);
-        System.out.printf(rowFormat.toString(), (Object[]) columns);
-        System.out.println(border);
+        String borderLine = border.toString();
+        String rowFormatStr = rowFormat.toString();
 
-        // Print rows
+        // Print header
+        printHeader(borderLine, rowFormatStr, columns.toArray(new String[0]));
+
+        // Print rows with pagination
+        int count = 0;
         for (LibraryItem item : items) {
-            Object[] rowValues = new Object[columnsToPrint];
-            for (int i = 0; i < columnsToPrint; i++) {
-                rowValues[i] = getters.get(columns[i]).apply(item);
+            Object[] rowValues = new Object[columns.size()];
+            for (int i = 0; i < columns.size(); i++) {
+                rowValues[i] = (i < baseColumns.length)
+                        ? Optional.ofNullable(getters.get(columns.get(i)).apply(item)).orElse("")
+                        : getUniqueField(item);
             }
-            System.out.printf(rowFormat.toString(), rowValues);
+            System.out.printf(rowFormatStr, rowValues);
+            count++;
+
+            if (count % 20 == 0 && count < items.size()) {
+                System.out.println(borderLine);
+                IOHelper.getStringInput(scanner, "Press ENTER to continue...", true);
+                IOHelper.clearScreen();
+                printHeader(borderLine, rowFormatStr, columns.toArray(new String[0]));
+            }
         }
 
-        System.out.println(border + "\n");
+        System.out.println(borderLine + "\n");
     }
 
+    // Helper to print the header row
+    private static void printHeader(String border, String rowFormat, String[] columns) {
+        System.out.println(border);
+        System.out.printf(rowFormat, (Object[]) columns);
+        System.out.println(border);
+    }
+
+    // Helper to get unique field string based on media type
+    private static String getUniqueField(LibraryItem item) {
+        return switch (item) {
+            case Book book -> "Pages: " + book.getNumberOfPages();
+            case Dvd dvd -> "Runtime: " + dvd.getRuntime() + " mins";
+            case Magazine mag -> "Issue: " + mag.getIssueNumber();
+            case VideoGame game -> "Platform: " + game.getPlatform();
+            case null, default -> "";
+        };
+    }
 
     /**
      * Displays detailed information about a library item.

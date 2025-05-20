@@ -30,7 +30,10 @@ public class Main {
                     case 1 -> addLibraryItem(scanner, catalog);
                     case 2 -> updateLibraryItem(scanner, catalog);
                     case 3 -> removeLibraryItem(scanner, catalog);
-                    case 4 -> IOHelper.printCatalog(catalog.getAllItems());
+                    case 4 -> {
+                        IOHelper.printCatalog(catalog.getAllItems(), scanner);
+                        IOHelper.getStringInput(scanner, "Press ENTER to continue...", true);
+                    }
                     default -> running = false; // Exit the loop
                 }
             }
@@ -51,7 +54,7 @@ public class Main {
 
         List<LibraryItem> items = catalog.getAllItems();
 
-        IOHelper.printCatalog(items, 2);
+        IOHelper.printCatalog(items, 2, scanner);
 
         String itemId = IOHelper.getStringInput(scanner, "Enter an item ID to remove (or type 'None' to cancel): ", false);
         if ("None".equalsIgnoreCase(itemId.trim())) {
@@ -106,7 +109,7 @@ public class Main {
             return;
         }
 
-        IOHelper.printCatalog(items, 2);
+        IOHelper.printCatalog(items, 2, scanner);
 
         String itemId = IOHelper.getStringInput(scanner, "Enter item ID to update (or type 'None' to cancel): ", false);
         if ("None".equalsIgnoreCase(itemId.trim())) {
@@ -122,11 +125,11 @@ public class Main {
 
         IOHelper.printItemDetails(item);
 
-        String[] options = {"Title", "Creator", "Item Specific Field", "Save and Exit", "Cancel Without Saving"};
+        String[] options = {"Title", "Creator", "Item Specific Field", "Save and Exit"};
         boolean changesMade = false;
 
         while (true) {
-            IOHelper.printMenu("Select Detail to Update", options, true, null);
+            IOHelper.printMenu("Select Detail to Update", options, true, "Cancel Without Saving");
             int choice = IOHelper.getIntInput(scanner, "Enter choice: ", 1, options.length);
 
             try {
